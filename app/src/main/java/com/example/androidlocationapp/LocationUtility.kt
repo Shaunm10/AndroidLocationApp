@@ -10,13 +10,16 @@ class LocationUtils(val context: Context) {
 
     fun hasLocationPermission(context: Context): Boolean {
 
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
+        val hasFineLocation = (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
+
+        val hasCoarseLocation = (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
+
+        return hasFineLocation && hasCoarseLocation
     }
 }
