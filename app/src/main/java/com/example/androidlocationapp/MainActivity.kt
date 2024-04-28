@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import android.Manifest
+import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import com.example.androidlocationapp.ui.theme.AndroidLocationAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +59,25 @@ fun LocationDisplay(
                 // permission is granted.
 
             } else {
-                // ask for permission
+
+                // permission is not granted so ask for permission,
+                // this is explaining to the user why we need the permission
+                val rationaleRequired = ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as MainActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as MainActivity,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+
+                // if we need to let the user know why we need the permission
+                if (rationaleRequired) {
+                    Toast.makeText(
+                        context,
+                        "Location is required for this feature to work.", Toast.LENGTH_LONG
+                    ).show()
+
+                }
             }
         })
     Column(
