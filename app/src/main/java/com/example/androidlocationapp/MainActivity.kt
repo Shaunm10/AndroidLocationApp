@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import android.Manifest
 import android.widget.Toast
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.example.androidlocationapp.ui.theme.AndroidLocationAppTheme
 
@@ -33,10 +33,23 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     // Greeting("Android")
+                    MyApp()
                 }
             }
         }
     }
+}
+
+@Composable
+fun MyApp() {
+    // this is the context from the current activity
+    val context = LocalContext.current
+
+    // use our custom utility to ask for permissions.
+    val locationUtils = LocationUtils(context)
+
+    // finally display this function with context and permissions
+    LocationDisplay(locationUtils = locationUtils, context = context)
 }
 
 //@Preview(showBackground = true)
@@ -77,6 +90,13 @@ fun LocationDisplay(
                         "Location is required for this feature to work.", Toast.LENGTH_LONG
                     ).show()
 
+                } else {
+                    // ask the user to change the settings in the devices settings.
+                    Toast.makeText(
+                        context,
+                        "Location is required. Please enable it in Android settings.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         })
@@ -89,9 +109,15 @@ fun LocationDisplay(
         Button(onClick = {
 
             if (locationUtils.hasLocationPermission(context)) {
-                // permission granted
+                // permission granted already by the user.
             } else {
                 // request location permission
+                requestPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
             }
         }) {
             Text(text = "Get Location")
