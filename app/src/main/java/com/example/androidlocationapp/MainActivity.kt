@@ -16,16 +16,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import android.Manifest
+
 import android.widget.Toast
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.androidlocationapp.ui.theme.AndroidLocationAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val viewModel: LocationViewModel = viewModel()
             AndroidLocationAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -33,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     // Greeting("Android")
-                    MyApp()
+                    MyApp(viewModel)
                 }
             }
         }
@@ -41,7 +45,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(viewModel: LocationViewModel) {
     // this is the context from the current activity
     val context = LocalContext.current
 
@@ -49,13 +53,14 @@ fun MyApp() {
     val locationUtils = LocationUtils(context)
 
     // finally display this function with context and permissions
-    LocationDisplay(locationUtils = locationUtils, context = context)
+    LocationDisplay(locationUtils = locationUtils, viewModel, context = context)
 }
 
 //@Preview(showBackground = true)
 @Composable
 fun LocationDisplay(
     locationUtils: LocationUtils,
+    viewModel: LocationViewModel,
     context: Context
 ) {
 
@@ -70,6 +75,7 @@ fun LocationDisplay(
                 permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
             ) {
                 // permission is granted.
+
 
             } else {
 
